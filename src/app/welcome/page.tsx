@@ -1,11 +1,13 @@
 import Link from "next/link";
-import { ArrowRight, ArrowUpRight, GithubIcon } from "lucide-react";
-import { buttonVariants } from "@/components/ui/button";
+import { ArrowUpRight } from "lucide-react";
+import { Button, buttonVariants } from "@/components/ui/button";
 import Image from "next/image";
 import { ThemeToggle } from "@/components/shared/ThemeToggle";
+import { auth, signIn } from "@/auth";
 
 const Navbar = async () => {
-  const session = null;
+  const session = await auth();
+  console.log(session);
 
   return (
     <nav className="sticky h-14 inset-x-0 top-0 z-30 w-full border-b-2 border-secondary/5 bg-white/10 dark:bg-black/10 backdrop-blur-lg transition-all motion-preset-slide-down">
@@ -24,31 +26,30 @@ const Navbar = async () => {
           <div className="items-center space-x-4">
             {!session ? (
               <>
-                <Link
-                  href="/"
-                  className={
-                    buttonVariants({
-                      variant: "secondary",
-                      size: "sm",
-                    }) +
-                    "dark:shadow-[2px_4px_16px_0px_rgba(255,255,255,0.6)_inset"
-                  }
+                <form
+                  action={async () => {
+                    "use server";
+                    await signIn("google", { redirectTo: "/" });
+                  }}
                 >
-                  Sign in
-                </Link>
-                <Link
-                  href="/"
-                  className={buttonVariants({
-                    size: "sm",
-                  })}
-                >
-                  Get started <ArrowRight className="ml-1.5 h-5 w-5" />
-                </Link>
+                  <Button
+                    type="submit"
+                    className={
+                      buttonVariants({
+                        variant: "secondary",
+                        size: "sm",
+                      }) +
+                      "dark:shadow-[2px_4px_16px_0px_rgba(255,255,255,0.6)_inset cursor-pointer"
+                    }
+                  >
+                    SignIn with Google
+                  </Button>
+                </form>
               </>
             ) : (
               <>
                 <Link
-                  href="/dashboard"
+                  href="/"
                   className={buttonVariants({
                     variant: "secondary",
                     size: "sm",
@@ -65,7 +66,9 @@ const Navbar = async () => {
   );
 };
 
-const page = () => {
+const page = async () => {
+  const session = await auth();
+
   return (
     <>
       <Navbar />
@@ -86,13 +89,34 @@ const page = () => {
           multiple jobs ? <br className="max-sm:hidden" /> Not anymore !
         </p>
 
-        <Link
-          className="mt-5 text-white flex items-center justify-center px-6 py-2 rounded-lg bg-black shadow-[2px_4px_16px_0px_rgba(255,255,255,0.3)_inset] dark:shadow-none"
-          href="/"
-        >
-          Get started with orio
-          <ArrowUpRight className="ml-2 h-5 w-5" />
-        </Link>
+        {!session ? (
+          <>
+            <form
+              action={async () => {
+                "use server";
+                await signIn("google", { redirectTo: "/" });
+              }}
+            >
+              <button
+                type="submit"
+                className="mt-5 text-white flex items-center justify-center px-6 py-2 rounded-lg bg-black shadow-[2px_4px_16px_0px_rgba(255,255,255,0.3)_inset] dark:shadow-none hover:bg-black/80 cursor-pointer transition-all duration-200 ease-in-out"
+              >
+                Get started with orio
+                <ArrowUpRight className="ml-2 h-5 w-5" />
+              </button>
+            </form>
+          </>
+        ) : (
+          <>
+            <Link
+              href="/"
+              className="mt-5 text-white flex items-center justify-center px-6 py-2 rounded-lg bg-black shadow-[2px_4px_16px_0px_rgba(255,255,255,0.3)_inset] dark:shadow-none"
+            >
+              Get started with orio
+              <ArrowUpRight className="ml-2 h-5 w-5" />
+            </Link>
+          </>
+        )}
       </div>
 
       {/* value proposition section */}
