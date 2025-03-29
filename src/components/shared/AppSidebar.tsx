@@ -1,9 +1,10 @@
-import { ChevronDown, Hash, Home, Search, Settings } from "lucide-react";
+"use client";
+
+import { ChevronDown, Hash, Home, Settings } from "lucide-react";
 
 import {
   Sidebar,
   SidebarContent,
-  SidebarFooter,
   SidebarGroup,
   SidebarGroupContent,
   SidebarGroupLabel,
@@ -13,9 +14,10 @@ import {
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
 import Image from "next/image";
-import { auth } from "@/auth";
+import { useSession } from "next-auth/react";
 import { Skeleton } from "../ui/skeleton";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { usePathname } from "next/navigation";
 
 const items = [
   {
@@ -30,8 +32,10 @@ const items = [
   },
 ];
 
-export async function AppSidebar() {
-  const session = await auth();
+export function AppSidebar() {
+  const { data: session } = useSession();
+  const pathname = usePathname();
+
   const applications = [
     {
       title: "Company 1",
@@ -44,19 +48,52 @@ export async function AppSidebar() {
       icon: Hash,
     },
   ];
+
   return (
     <Sidebar>
-      <SidebarHeader>
-        <div className="px-2 bg-secondary p-2 rounded-lg flex items-center text-sm gap-2">
-          <Search size={18} /> <span className="">Search</span>
-        </div>
-      </SidebarHeader>
+      {session && session?.user && (
+        <SidebarHeader>
+          <div className="flex bg-secondary rounded-lg w-full justify-between p-2 items-center">
+            <Avatar>
+              <Image
+                src={session.user.image as string}
+                alt={session.user.name as string}
+                width={32}
+                height={32}
+                className="rounded-full"
+              />
+              <AvatarFallback>
+                <Skeleton className="h-8 w-8" />
+              </AvatarFallback>
+            </Avatar>
+
+            <div className="w-[80%]">
+              <p className="text-sm">{session.user.name}</p>
+              <p className="text-xs font-light line-clamp-1">
+                {session.user.email}
+              </p>
+            </div>
+          </div>
+        </SidebarHeader>
+      )}
       <SidebarContent>
         <SidebarGroup>
           <SidebarMenu>
             {items.map((item) => (
-              <SidebarMenuItem key={item.title}>
-                <SidebarMenuButton asChild>
+              <SidebarMenuItem
+                key={item.title}
+                className={`rounded-md ${
+                  item.url === pathname &&
+                  "bg-blue-600 dark:bg-blue-500 shadow-[2px_4px_16px_0px_rgba(255,255,255,0.2)_inset] text-white"
+                }`}
+              >
+                <SidebarMenuButton
+                  asChild
+                  className={`${
+                    item.url === pathname &&
+                    "hover:bg-blue-600 transition-all duration-200 ease-in-out shadow-[2px_4px_16px_0px_rgba(255,255,255,0.2)_inset]"
+                  }`}
+                >
                   <a href={item.url}>
                     <item.icon />
                     <span>{item.title}</span>
@@ -87,31 +124,6 @@ export async function AppSidebar() {
           </SidebarGroupContent>
         </SidebarGroup>
       </SidebarContent>
-      {session && session?.user && (
-        <SidebarFooter>
-          <div className="flex bg-secondary rounded-lg w-full justify-between p-2 items-center">
-            <Avatar>
-              <Image
-                src={session.user.image as string}
-                alt={session.user.name as string}
-                width={32}
-                height={32}
-                className="rounded-full"
-              />
-              <AvatarFallback>
-                <Skeleton className="h-8 w-8" />
-              </AvatarFallback>
-            </Avatar>
-
-            <div className="w-[80%]">
-              <p className="text-sm">{session.user.name}</p>
-              <p className="text-xs font-light line-clamp-1">
-                {session.user.email}
-              </p>
-            </div>
-          </div>
-        </SidebarFooter>
-      )}
     </Sidebar>
   );
 }

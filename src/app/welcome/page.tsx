@@ -70,7 +70,7 @@ const page = async () => {
   const session = await auth();
 
   return (
-    <>
+    <main className="overflow-y-scroll max-h-screen max-sm:pb-16">
       <Navbar />
 
       {/* hero section */}
@@ -255,7 +255,7 @@ const page = async () => {
         </div>
         <ThemeToggle />
       </footer>
-    </>
+    </main>
   );
 };
 
