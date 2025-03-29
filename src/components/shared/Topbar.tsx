@@ -1,14 +1,15 @@
 import Image from "next/image";
 import { Input } from "../ui/input";
 import { Bell, Search } from "lucide-react";
+import { SidebarTrigger } from "../ui/sidebar";
 
 const Topbar = () => {
   return (
-    <div className="bg-secondary/60 p-2 md:m-2 md:rounded-lg h-12 backdrop-blur-sm absolute inset-0 z-10 flex items-center justify-between md:gap-4 gap-2">
+    <div className="bg-secondary max-md:bg-secondary/40 p-2 md:m-2 md:rounded-lg h-12 max-md:backdrop-blur-lg absolute inset-0 z-10 flex items-center justify-between md:gap-4 gap-2 max-md:py-8">
       <Image src="/logo.png" alt="logo" width={36} height={36} className="" />
 
       <div className="flex items-center justify-center w-full">
-        <div className="md:w-1/2 w-full flex items-center px-4 bg-secondary/60 rounded-lg h-8 gap-1">
+        <div className="md:w-1/2 w-full flex items-center px-4 border rounded-lg h-8 gap-1">
           <Search size={18} />
           <Input
             type="text"
@@ -18,7 +19,8 @@ const Topbar = () => {
         </div>
       </div>
 
-      <Bell className="mr-1" size={28} />
+      <Bell className="mr-1 max-md:hidden" size={28} />
+      <SidebarTrigger className="md:hidden" size={"lg"} />
     </div>
   );
 };

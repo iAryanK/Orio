@@ -1,6 +1,7 @@
 import AllResume from "@/components/home/AllResume";
 import BarGraph from "@/components/home/BarGraph";
 import Dashboard from "@/components/home/Dashboard";
+import SocialLinks from "@/components/home/SocialLinks";
 
 export default async function Home() {
   return (
@@ -10,6 +11,7 @@ export default async function Home() {
         <BarGraph />
       </div>
       <AllResume />
+      <SocialLinks />
     </div>
   );
 }

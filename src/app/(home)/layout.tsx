@@ -1,5 +1,5 @@
 import { SessionProvider } from "next-auth/react";
-import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
+import { SidebarProvider } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/shared/AppSidebar";
 import Topbar from "@/components/shared/Topbar";
 
@@ -15,7 +15,6 @@ export default function HomeLayout({
           <AppSidebar />
           <main className="w-full relative">
             <Topbar />
-            <SidebarTrigger className="absolute bottom-4 right-4" />
             <section className="h-screen w-full overflow-y-scroll py-16 ">
               {children}
             </section>
